@@ -1,24 +1,20 @@
 start:
-    name: start
     commands: ["s", "start", "begin", "go"]
-    action: null
+    action: start_recording
     description: this starts the log timer (you are on the clock)
     
 stop:
-    name: stop
     commands: ["e", "stop", "finish", "end"]
-    action: null
+    action: stop_recording
     description: this stops the log timer (you are of the clock)
     
 save:
-    name: save
     commands: ["save", "store", "msg"]
-    action: null
+    action: save_recording
     description: this will save all recorded logs (with and without message)
 
 quit:
-    name: quit
     commands: ["q", "quit", "terminate", "kill", "exit"]
-    action: null
+    action: quit_recording
     description: this will exit your session
     

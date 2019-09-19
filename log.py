@@ -12,7 +12,7 @@ class InputOutput:
         self.location = None
         self.filename = None
         
-    def ceate(self, location, filename):
+    def ceate_file(self, location, filename):
         if not os.path.exists(os.path.join(location, filename)):
             with open(self.filename, "w") as file:
                 pass
@@ -27,16 +27,14 @@ class Console:
     io = InputOutput()
     
     def __init__(self):
-        self.actions = [Action(**each) for each in self.io.read_yaml("console.yaml")]
+        self.actions = [Action(name=k, **v) for k, v in self.io.read_yaml("console.yaml").items()]
+        self._welcome()
         
     def _welcome(self):
         action = "\n".join(map(Action.show, self.actions))
-        print("\n\nWelcome to this simple logger, you can use: \n", action,
+        print(f"\n\nWelcome to this simple logger, you can use: \n{action}\n"
               "Alternatively you can save a log by adding a comment or space after the end commands.\n\n")
-              
-    def _action(self, command):
-        return
-
+ 
 
 class Logger(Console):
     filename = "Serpentine.log"
@@ -91,7 +89,7 @@ class Logger(Console):
                            f"{self.time_diff},"
                            f"{msg}\n")
         except PermissionError:
-            print("Unable to save due to permission error, please close the file.")
+            print("Unable to save due to permission error, please check if file is closed.")
 
     def show_recording(self, _):
         with open(self.filename, "r") as file:
@@ -102,11 +100,11 @@ class Logger(Console):
 
         while command == None:
             command = input()
-
-            for options in ["start", "stop", "save", "show", "quit"]:
-                if [True for each in getattr(self, options) if command.split(" ")[0] == each]:
-                    msg = " ".join(command.split(" ")[1:])
-                    getattr(self, options + "_recording")(msg)
+            key = command.split(" ")[0]
+            for each in self.actions:
+                 if each.called(key):
+                    msg = command[command.index(key)+len(key):].strip()
+                    getattr(self, each.action)(msg)
             command = None
 
 
