@@ -1,23 +1,50 @@
 
 import datetime
 import os
+import csv
+import yaml
 
-class Logger:
+from actions import Action
+
+
+class InputOutput:
+    def __init__(self):
+        self.location = None
+        self.filename = None
+        
+    def ceate(self, location, filename):
+        if not os.path.exists(os.path.join(location, filename)):
+            with open(self.filename, "w") as file:
+                pass
+                
+    def read_yaml(self, location):
+        with open(location, "rb") as stream:
+            data = yaml.safe_load(stream)
+        return data
+
+
+class Console:
+    io = InputOutput()
+    
+    def __init__(self):
+        self.actions = [Action(**each) for each in self.io.read_yaml("console.yaml")]
+        
+    def _welcome(self):
+        action = "\n".join(map(Action.show, self.actions))
+        print("\n\nWelcome to this simple logger, you can use: \n", action,
+              "Alternatively you can save a log by adding a comment or space after the end commands.\n\n")
+              
+    def _action(self, command):
+        return
+
+
+class Logger(Console):
     filename = "Serpentine.log"
     format = "%Y-%m-%d,%H:%M:%S"
-    headers = "Start day,Start time,End day,End time,Minutes,comment"
+    headers = ["Start day", "Start time", "End day", "End time", "Minutes", "comment"]
 
     def __init__(self):
-        if not os.path.exists(self.filename):
-            with open(self.filename, "w") as file:
-                file.write(self.headers)
-
-        self.start = ["s", "start", "begin", "go"]
-        self.stop = ["e", "stop",  "finish", "end"]
-        self.save = ["save", "store", "msg"]
-        self.show = ["d", "show", "display"]
-        self.quit = ["q", "quit",]
-
+        super().__init__()
         self.time_start = None
         self.time_end = None
         self.time_diff = None
@@ -85,12 +112,4 @@ class Logger:
 
 if __name__ == "__main__":
     test = Logger()
-
-    print("\n\nWelcome to this simple logger, you can use: \n"
-          f"{test.start} to begin a log session\n"
-          f"{test.stop} to end a session\n"
-          f"{test.save} to save a session (please add a comment after it)\n"
-          f"{test.show} to display the recorded logs\n"
-          f"{test.quit} to quit the program\n\n"
-          "Alternatively you can save a log by adding a comment or space after the end commands.\n\n")
     test.listen()
