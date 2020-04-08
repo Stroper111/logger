@@ -34,15 +34,7 @@ class Tracker(AbstractTracker):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if isinstance(exc_val, KeyboardInterrupt):
-            print("\n\nProgram terminated by KeyBoard interrupt")
-            return True
-
-        if exc_tb:
-            print("\n\nUnknown error occurred")
-            return False
-
-        print("\n\nProgram terminated successful")
+        pass
 
     @property
     def active_window_name(self) -> str:
@@ -68,7 +60,7 @@ class Tracker(AbstractTracker):
 
         # No match found
         if job.task is None:
-            job = Job(task='idle', program='unknown', window_name=window_name)
+            job = Job(task='Idle', program='unknown', window_name=window_name)
         return job
 
     @property

@@ -19,6 +19,16 @@ class Session:
         self._store_job()
         self.print()
 
+        if isinstance(exc_val, KeyboardInterrupt):
+            print("\n\nProgram terminated by KeyBoard interrupt")
+            return True
+
+        if exc_tb:
+            print("\n\nUnknown error occurred")
+            return False
+
+        print("\n\nProgram terminated successful")
+
     @property
     def active_job(self):
         return self._current_job
