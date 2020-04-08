@@ -30,7 +30,7 @@ class JobDecoder(json.JSONDecoder):
 class Job:
     _format_time = '%Y %b %d, %a %H:%M:%S +0000'
 
-    def __init__(self, task: str = 'idle', program: str = 'unknown', window_name: str = 'None'):
+    def __init__(self, task: str = 'Idle', program: str = 'unknown', window_name: str = 'None'):
         self.task = task
         self.program = program
         self.window_name = window_name

@@ -4,6 +4,7 @@ from core import Session
 
 if __name__ == '__main__':
     time_start = time.time()
+    print("Program running in the background, don't worry ...")
 
     with Session() as session:
         while True:
@@ -14,4 +15,5 @@ if __name__ == '__main__':
             # Print after some time
             if time.time() - time_start > 10:
                 time_start = time.time()
+                print(f"*{'-' * 30}*", end='')
                 session.print()
