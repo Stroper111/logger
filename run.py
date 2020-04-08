@@ -1,15 +1,17 @@
 import time
 
-from core.tracker import Tracker
+from core import Session
 
 if __name__ == '__main__':
-    with Tracker() as tracker:
+    time_start = time.time()
 
-        run = 0
-        print(f"{'Run':^6s} | {'Task':^20s} | {'Program':^20s} | {'Window name'}")
+    with Session() as session:
         while True:
-            run += 1
-            run %= 999_999
-            data = tracker.parser_info
-            print(f"\r{run:6d} | {data.task:20s} | {data.program:20s} | {data.window_name:100s}", end='')
+            # Sleep and run.
             time.sleep(0.2)
+            session.run()
+
+            # Print after some time
+            if time.time() - time_start > 10:
+                time_start = time.time()
+                session.print()

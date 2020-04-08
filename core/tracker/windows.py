@@ -6,19 +6,18 @@ import time
 import os
 import re
 
-from collections import namedtuple
-
 from core.tracker.abstract import AbstractTracker
-
+from core.tools import Job
 
 
 class Tracker(AbstractTracker):
-    job = namedtuple('job', ('task', 'program', 'window_name'))
 
     _programs = ('programs', 'programs.yaml')
     _patterns = ('patterns', 'patterns.yaml')
 
     def __init__(self):
+        super().__init__()
+
         # Get base path
         dir_data = str(pathlib.Path(__file__).parents[2])
 
@@ -36,9 +35,13 @@ class Tracker(AbstractTracker):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if isinstance(exc_val, KeyboardInterrupt):
-            return print("\n\nProgram terminated by KeyBoard interrupt")
+            print("\n\nProgram terminated by KeyBoard interrupt")
+            return True
+
         if exc_tb:
-            return print("\n\nUnknown error occurred")
+            print("\n\nUnknown error occurred")
+            return False
+
         print("\n\nProgram terminated successful")
 
     @property
@@ -48,7 +51,7 @@ class Tracker(AbstractTracker):
         return window_name
 
     @property
-    def parser_info(self) -> job:
+    def retrieve_job(self) -> Job:
         """ Return the general information about the info link.  """
         window_name = self.active_window_name
 
@@ -57,15 +60,15 @@ class Tracker(AbstractTracker):
 
         # Check for primary programs
         if program_name:
-            job = self.job(*self._retrieve_program(program_name), window_name)
+            job: Job = Job(*self._retrieve_program(program_name), window_name)
 
         # If there is no program name or not found, try pattern matching.
         if not program_name or (program_name and job.task is None):
-            job = self.job(*self._retrieve_pattern(window_name), window_name)
+            job = Job(*self._retrieve_pattern(window_name), window_name)
 
         # No match found
         if job.task is None:
-            job = self.job(task='idle', program='unknown', window_name=window_name)
+            job = Job(task='idle', program='unknown', window_name=window_name)
         return job
 
     @property
@@ -74,7 +77,8 @@ class Tracker(AbstractTracker):
         project = window_name.split(" ").pop(0)
         return "Pycharm project: " + project
 
-    def _load_yaml(self, path):
+    @staticmethod
+    def _load_yaml(path):
         """ Open a yaml file and return the data.  """
         with open(path) as file:
             data = yaml.safe_load(file)
@@ -94,12 +98,3 @@ class Tracker(AbstractTracker):
                 if len(re.findall(pattern, window_name)) > 0:
                     return task, program
         return None, None
-
-
-if __name__ == '__main__':
-
-    with Tracker() as tracker:
-        while True:
-            print(tracker.parser_info)
-            time.sleep(2)
-
