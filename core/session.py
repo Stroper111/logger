@@ -70,6 +70,3 @@ class Session:
                 self._activities[self._current_job.task][self._current_job.program] = [self._current_job.timers]
             else:
                 self._activities[self._current_job.task][self._current_job.program].append(self._current_job.timers)
-
-    def _create_session(self):
-        pass
