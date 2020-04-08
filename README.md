@@ -1,2 +1,11 @@
-# logger
-Simple console hour registration
+# Automatic logger
+
+Automatically logs **all** user activity, 
+
+
+## Usages
+
+
+
+## Functions
+

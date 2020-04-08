@@ -1,0 +1,105 @@
+import win32gui
+
+import pathlib
+import yaml
+import time
+import os
+import re
+
+from collections import namedtuple
+
+from core.tracker.abstract import AbstractTracker
+
+
+
+class Tracker(AbstractTracker):
+    job = namedtuple('job', ('task', 'program', 'window_name'))
+
+    _programs = ('programs', 'programs.yaml')
+    _patterns = ('patterns', 'patterns.yaml')
+
+    def __init__(self):
+        # Get base path
+        dir_data = str(pathlib.Path(__file__).parents[2])
+
+        # Predefine for convenience
+        self.data_programs: dict = dict()
+        self.data_patterns: dict = dict()
+
+        # Get data
+        for name, path in [self._programs, self._patterns]:
+            full_path = os.path.join(dir_data, "data", path)
+            setattr(self, 'data_' + name, self._load_yaml(full_path))
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if isinstance(exc_val, KeyboardInterrupt):
+            return print("\n\nProgram terminated by KeyBoard interrupt")
+        if exc_tb:
+            return print("\n\nUnknown error occurred")
+        print("\n\nProgram terminated successful")
+
+    @property
+    def active_window_name(self) -> str:
+        window = win32gui.GetForegroundWindow()
+        window_name = win32gui.GetWindowText(window)
+        return window_name
+
+    @property
+    def parser_info(self) -> job:
+        """ Return the general information about the info link.  """
+        window_name = self.active_window_name
+
+        # Primary attempt to distinguish program
+        *info, program_name = window_name.split(" - ")
+
+        # Check for primary programs
+        if program_name:
+            job = self.job(*self._retrieve_program(program_name), window_name)
+
+        # If there is no program name or not found, try pattern matching.
+        if not program_name or (program_name and job.task is None):
+            job = self.job(*self._retrieve_pattern(window_name), window_name)
+
+        # No match found
+        if job.task is None:
+            job = self.job(task='idle', program='unknown', window_name=window_name)
+        return job
+
+    @property
+    def pycharm(self) -> str:
+        window_name = self.active_window_name
+        project = window_name.split(" ").pop(0)
+        return "Pycharm project: " + project
+
+    def _load_yaml(self, path):
+        """ Open a yaml file and return the data.  """
+        with open(path) as file:
+            data = yaml.safe_load(file)
+        return data
+
+    def _retrieve_program(self, program_name):
+        """ Get the specific taks and program from a program name.  """
+        for task, program in self.data_programs.items():
+            if program.get(program_name, None) is not None:
+                return task, program[program_name]
+        return None, None
+
+    def _retrieve_pattern(self, window_name):
+        """ Get the specific taks and program by means of pattern matching.  """
+        for task, patterns in self.data_patterns.items():
+            for pattern, program in patterns.items():
+                if len(re.findall(pattern, window_name)) > 0:
+                    return task, program
+        return None, None
+
+
+if __name__ == '__main__':
+
+    with Tracker() as tracker:
+        while True:
+            print(tracker.parser_info)
+            time.sleep(2)
+
