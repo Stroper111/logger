@@ -17,7 +17,7 @@ class Session:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._store_job()
-        self.print()
+        self.print(threshold=0)
 
         if isinstance(exc_val, KeyboardInterrupt):
             print("\n\nProgram terminated by KeyBoard interrupt")
@@ -45,29 +45,31 @@ class Session:
             self._store_job()
             self._current_job = self._tracker.retrieve_job
 
-    def print(self):
+    def print(self,  threshold=60):
         """ Gives a nice print of the current activity list and total time spent on every task and program.  """
-        for task, programs in self._activities.items():
-            for program, timers in programs.items():
-                timer = str(datetime.timedelta(seconds=sum(timer['duration'].seconds for timer in timers)))
-                print(f"\nTask: {task}\n\tProgram: {program}\n\t\tTime spend: {timer}")
+        for task, programs in sorted(self._activities.items()):
+            for program, timers in sorted(programs.items()):
+                timer = datetime.timedelta(seconds=sum(timer['duration'].seconds for timer in timers))
+                if timer.seconds > threshold:
+                    print(f"\nTask: {task}\n\tProgram: {program}\n\t\tTime spend: {timer}")
 
     def _store_job(self):
         """ Store the current job in the activity list.  """
-        self._current_job.stop()
+        if self._current_job is not None:
+            self._current_job.stop()
 
-        # Get the task location
-        exists_task = self._activities.get(self._current_job.task, None)
-        if exists_task  is None:
-            self._activities[self._current_job.task] = dict()
-            exists_task  = self._activities[self._current_job.task]
+            # Get the task location
+            exists_task = self._activities.get(self._current_job.task, None)
+            if exists_task is None:
+                self._activities[self._current_job.task] = dict()
+                exists_task  = self._activities[self._current_job.task]
 
-        # Get the program location
-        exists_program = exists_task .get(self._current_job.program, None)
-        if exists_program is None:
-            self._activities[self._current_job.task][self._current_job.program] = [self._current_job.timers]
-        else:
-            self._activities[self._current_job.task][self._current_job.program].append(self._current_job.timers)
+            # Get the program location
+            exists_program = exists_task .get(self._current_job.program, None)
+            if exists_program is None:
+                self._activities[self._current_job.task][self._current_job.program] = [self._current_job.timers]
+            else:
+                self._activities[self._current_job.task][self._current_job.program].append(self._current_job.timers)
 
     def _create_session(self):
         pass
