@@ -3,4 +3,7 @@ Remaining:
     obs: OBS \d\d.\d.\d
 
 Contacts:
-    slack: Slack \| .* \| Serpentine
+    slack (Serpentine): Slack \| .* \| Serpentine
+
+Remaining:
+    vuze: SWT_Window_Vuze
