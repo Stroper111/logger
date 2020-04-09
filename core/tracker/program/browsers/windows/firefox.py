@@ -29,7 +29,7 @@ class Firefox(BaseProgram):
         if window_name.endswith("GitLab - Mozilla Firefox"):
             return "GitLab"
 
-        if len(re.findall("WhatsApp .* Mozilla Firefox")) > 0:
+        if len(re.findall("WhatsApp .* Mozilla Firefox", window_name)) > 0:
             return 'WhatsApp'
 
         # YouTube - Mozilla Firefox
@@ -37,7 +37,10 @@ class Firefox(BaseProgram):
         # Netflix - Mozilla Firefox
         window = window_name.split(" - ")
         if len(window) == 2 and len(window[0]) < 20:
-            return window.pop(0)
+            return window[0]
+
+        if len(window) > 2 and len(window[-2]) < 20:
+            return window[-2]
 
         # No specification found
         return None

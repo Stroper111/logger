@@ -120,7 +120,7 @@ class Session:
         path_summary = os.path.join(self.dir_session, 'summary.txt')
         with open(path_summary, 'a') as file:
             for task, programs in sorted(self._activities.items()):
-                file.write(f"\nTask: {task}")
+                file.write(f"\n\nTask: {task}")
                 for program, duration in sorted(programs.items()):
                     timer = datetime.timedelta(seconds=duration)
-                    file.write(f"\n\tProgram: {program:30s} duration: {timer}\n")
+                    file.write(f"\n\tProgram: {program:30s} duration: {timer}")
