@@ -71,7 +71,7 @@ class Session:
             for program, duration in sorted(programs.items()):
                 timer = datetime.timedelta(seconds=duration)
                 if timer.seconds > threshold:
-                    print(f"\nTask: {task}\n\tProgram: {program:20s} duration: {timer}")
+                    print(f"\nTask: {task}\n\tProgram: {program:30s} duration: {timer}")
 
     def _store_job(self):
         """ Terminate job, store it to disk and add duration to activity list.  """
@@ -120,6 +120,7 @@ class Session:
         path_summary = os.path.join(self.dir_session, 'summary.txt')
         with open(path_summary, 'a') as file:
             for task, programs in sorted(self._activities.items()):
+                file.write(f"\nTask: {task}")
                 for program, duration in sorted(programs.items()):
                     timer = datetime.timedelta(seconds=duration)
-                    file.write(f"\nTask: {task}\n\tProgram: {program:20s} duration: {timer}\n")
+                    file.write(f"\n\tProgram: {program:30s} duration: {timer}\n")

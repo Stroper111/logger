@@ -11,8 +11,9 @@ class Programming(BaseProgram):
 
     @property
     def job(self):
-        window_name = self._job.window_name
-        if len(re.findall(".* [.*] - .*", window_name)) > 0:
-            project = window_name.split(" ").pop(0)
-            self._job.program = f"{self._job.program} ({project})"
+        specification = self._job.window_name.split(' ').pop(0)
+        self._job.program = f"{self._job.program} ({specification})"
         return self._job
+
+    def _parser(self, window_name):
+        return
