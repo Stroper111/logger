@@ -2,9 +2,10 @@ import win32gui
 
 import pathlib
 import yaml
-import time
 import os
 import re
+
+import core.tracker.program as program
 
 from core.tracker.abstract import AbstractTracker
 from core.tools import Job
@@ -52,22 +53,21 @@ class Tracker(AbstractTracker):
 
         # Check for primary programs
         if program_name:
-            job: Job = Job(*self._retrieve_program(program_name), window_name)
+            job: Job = Job(*self._retrieve_program(program_name, window_name))
 
         # If there is no program name or not found, try pattern matching.
         if not program_name or (program_name and job.task is None):
-            job = Job(*self._retrieve_pattern(window_name), window_name)
+            job = Job(*self._retrieve_pattern(window_name))
+
+        # Check if we can specify the activity more
+        if job.task and hasattr(program, job.task):
+            program_filter = getattr(program, job.task)(job)
+            job = program_filter.job
 
         # No match found
         if job.task is None:
             job = Job(task='Idle', program='unknown', window_name=window_name)
         return job
-
-    @property
-    def pycharm(self) -> str:
-        window_name = self.active_window_name
-        project = window_name.split(" ").pop(0)
-        return "Pycharm project: " + project
 
     @staticmethod
     def _load_yaml(path):
@@ -76,17 +76,17 @@ class Tracker(AbstractTracker):
             data = yaml.safe_load(file)
         return data
 
-    def _retrieve_program(self, program_name):
+    def _retrieve_program(self, program_name, window_name):
         """ Get the specific taks and program from a program name.  """
-        for task, program in self.data_programs.items():
-            if program.get(program_name, None) is not None:
-                return task, program[program_name]
-        return None, None
+        for task, programs in self.data_programs.items():
+            if programs.get(program_name, None) is not None:
+                return task, programs[program_name], window_name
+        return (None,) * 3
 
     def _retrieve_pattern(self, window_name):
         """ Get the specific taks and program by means of pattern matching.  """
         for task, patterns in self.data_patterns.items():
             for pattern, program in patterns.items():
                 if len(re.findall(pattern, window_name)) > 0:
-                    return task, program
-        return None, None
+                    return task, program, window_name
+        return (None,) * 3

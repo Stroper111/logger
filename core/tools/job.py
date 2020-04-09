@@ -47,10 +47,10 @@ class Job:
         return self.__str__()
 
     def __eq__(self, other: 'Job'):
-        return self.task == other.task and self.program == other.program and self.window_name == other.window_name
+        return self.task == other.task and self.program == other.program
 
     def __ne__(self, other):
-        return self.task != other.task or self.program != other.program or self.window_name != other.window_name
+        return self.task != other.task or self.program != other.program
 
     @property
     def timers(self):

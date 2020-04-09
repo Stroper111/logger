@@ -11,9 +11,3 @@ if __name__ == '__main__':
             # Sleep and run.
             time.sleep(0.2)
             session.run()
-
-            # Print after some time
-            if time.time() - time_start > 10:
-                time_start = time.time()
-                print(f"*{'-' * 30}*", end='')
-                session.print()
