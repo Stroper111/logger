@@ -31,6 +31,7 @@ class Session:
             self._store_job()
             self._save_summary()
             self.print(threshold=0)
+            os.system(f"start {os.path.join(self.dir_session, 'summary.txt')}")
 
         if isinstance(exc_val, KeyboardInterrupt):
             print("\n\nProgram terminated by KeyBoard interrupt")
