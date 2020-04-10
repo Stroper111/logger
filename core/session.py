@@ -1,6 +1,7 @@
 import datetime
 import os
 import pathlib
+import codecs
 
 from typing import Dict, Union, List
 
@@ -75,11 +76,16 @@ class Session:
 
     def _store_job(self):
         """ Terminate job, store it to disk and add duration to activity list.  """
+
         # Terminate the job
         self._current_job.stop()
 
-        # Represent current job
-        print(f"\n{self._current_job}")
+        # Filter out quick Micromanagement
+        if (self._current_job.duration.seconds > 2):
+            print(f"\n{self._current_job}")
+        else:
+            print(f"\nMicromanagement: {self._current_job.window_name}")
+            self._current_job.task = 'Micromanagement'
 
         # Store the job to a json file.
         self._save_job()
@@ -110,7 +116,7 @@ class Session:
 
         path_logs = os.path.join(self.dir_session, 'logs.txt')
         data = self._current_job.serialize
-        with open(path_logs, 'a') as file:
+        with codecs.open(path_logs, 'a', 'utf-8') as file:
             file.write(data + '\n')
 
     def _save_summary(self):
@@ -118,7 +124,7 @@ class Session:
             os.makedirs(self.dir_session)
 
         path_summary = os.path.join(self.dir_session, 'summary.txt')
-        with open(path_summary, 'a') as file:
+        with codecs.open(path_summary, 'w', 'utf-8') as file:
             for task, programs in sorted(self._activities.items()):
                 file.write(f"\n\nTask: {task}")
                 for program, duration in sorted(programs.items()):

@@ -11,7 +11,7 @@ class Firefox(BaseProgram):
 
     @property
     def job(self):
-        specification = self._parser(self._job.window_name)
+        specification = self._parser(self._job._window_name)
         if specification is not None:
             self._job.program = f"{self._job.program} ({specification})"
         return self._job
@@ -21,7 +21,7 @@ class Firefox(BaseProgram):
 
         # Special case
         if window_name.endswith("Mozilla Firefox (Private Browsing)"):
-            self._job.window_name = 'hidden'
+            self._job._window_name = 'hidden'
             return None
 
         methods = ['_startswith', '_endswith', '_pattern', '_splitting']

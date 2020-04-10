@@ -16,3 +16,4 @@ if __name__ == '__main__':
             time_passed = time.time() - time_start
             if time_passed > 60 * 5:
                 session.save_summary()
+                time_start = time.time()

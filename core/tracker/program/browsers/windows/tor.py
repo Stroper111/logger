@@ -9,5 +9,5 @@ class Tor(BaseProgram):
 
     @property
     def job(self):
-        self._job.window_name = 'hidden'
+        self._job._window_name = 'hidden'
         return self._job

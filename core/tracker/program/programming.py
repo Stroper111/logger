@@ -11,7 +11,7 @@ class Programming(BaseProgram):
 
     @property
     def job(self):
-        specification = self._job.window_name.split(' ').pop(0)
+        specification = self._job._window_name.split(' ').pop(0)
         self._job.program = f"{self._job.program} ({specification})"
         return self._job
 

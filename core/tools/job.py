@@ -33,15 +33,15 @@ class Job:
     def __init__(self, task: str = 'Idle', program: str = 'unknown', window_name: str = 'None'):
         self.task = task
         self.program = program
-        self.window_name = window_name
-        self.time_start: datetime = datetime.now()
-        self.time_end: Union[datetime, None] = None
+        self._window_name = window_name
+        self._time_start: datetime = datetime.now()
+        self._time_end: Union[datetime, None] = None
 
     def __str__(self):
         return f"Task: {self.task:20s}\tProgram: {self.program:20s}\tDuration  : {self.duration}" \
-               f"\n\tWindow name: {self.window_name}"\
-               f"\n\tStart time: {self.time_start.strftime(self._format_time)}" \
-               f"\n\tEnd time  : {self.time_end.strftime(self._format_time) if self.time_end is not None else 'None'}"
+               f"\n\tWindow name - {self.window_name}"\
+               f"\n\tStart time  - {self.start_timer}" \
+               f"\n\tEnd time    - {self.end_timer}"
 
     def __repr__(self):
         return self.__str__()
@@ -53,24 +53,37 @@ class Job:
         return self.task != other.task or self.program != other.program
 
     @property
-    def timers(self):
-        return dict(time_start=datetime.strftime(self.time_start, '%Y-%m-%dT%H:%M:%S'),
-                    time_end=datetime.strftime(self.time_end, '%Y-%m-%dT%H:%M:%S'),
-                    duration=self.time_end - self.time_start)
+    def start_timer(self):
+        return self._time_start.replace(microsecond=0).isoformat(sep=' ')
+
+    @property
+    def end_timer(self):
+        return self._time_end.replace(microsecond=0).isoformat(sep=' ') if self._time_end is not None else 'None'
 
     @property
     def duration(self):
-        if self.time_end is None:
-            return datetime.now() - self.time_start
-        return self.time_end - self.time_start
+        if self._time_end is None:
+            return datetime.now() - self._time_start
+        return self._time_end - self._time_start
+
+    @property
+    def timers(self):
+        return dict(time_start=self.start_timer,
+                    time_end=self.end_timer,
+                    duration=self.duration)
+    @property
+    def window_name(self):
+        """ Cleans up the window name.  """
+        if self._window_name is None:
+            return 'None'
+        return self._window_name.replace('\\', '/')
 
     @property
     def serialize(self):
-        window_name = self.window_name.replace('\\', '/')
         return f"\nTask: {self.task:20s}\tProgram: {self.program:20s}\tDuration  : {self.duration}" \
-               f"\n\tWindow name: {window_name}" \
-               f"\n\tStart time: {self.time_start.replace(microsecond=0).isoformat(sep=' ')}" \
-               f"\n\tStart time: {self.time_end.replace(microsecond=0).isoformat(sep=' ')}"
+               f"\n\tWindow name - {self.window_name}" \
+               f"\n\tStart time  - {self.start_timer}" \
+               f"\n\tEnd time    - {self.end_timer}"
 
     @property
     def json_serialize(self):
@@ -83,15 +96,15 @@ class Job:
         return json.loads(object, cls=JobDecoder)
 
     def stop(self):
-        self.time_end = datetime.now()
+        self._time_end = datetime.now()
 
 
 if __name__ == '__main__':
     test = Job()
     test.stop()
 
-    serialized = test.serialize
-    deserialized = test.deserialize(serialized)
+    serialized = test.json_serialize
+    deserialized = test.json_deserialize(serialized)
 
     print(serialized)
     print(deserialized)
