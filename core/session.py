@@ -108,7 +108,7 @@ class Session:
         if not os.path.exists(self.dir_session):
             os.makedirs(self.dir_session)
 
-        path_logs = os.path.join(self.dir_session, 'logs.json')
+        path_logs = os.path.join(self.dir_session, 'logs.txt')
         data = self._current_job.serialize
         with open(path_logs, 'a') as file:
             file.write(data + '\n')

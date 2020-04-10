@@ -38,10 +38,10 @@ class Job:
         self.time_end: Union[datetime, None] = None
 
     def __str__(self):
-        return f"Task: {self.task:20s}, Program: {self.program:20s}, window name: {self.window_name}" \
+        return f"Task: {self.task:20s}\tProgram: {self.program:20s}\tDuration  : {self.duration}" \
+               f"\n\tWindow name: {self.window_name}"\
                f"\n\tStart time: {self.time_start.strftime(self._format_time)}" \
-               f"\n\tEnd time  : {self.time_end.strftime(self._format_time) if self.time_end is not None else 'None'}" \
-               f"\n\tDuration  : {self.time_end - self.time_start if self.time_end is not None else 'unknown'}"
+               f"\n\tEnd time  : {self.time_end.strftime(self._format_time) if self.time_end is not None else 'None'}"
 
     def __repr__(self):
         return self.__str__()
@@ -66,11 +66,19 @@ class Job:
 
     @property
     def serialize(self):
+        window_name = self.window_name.replace('\\', '/')
+        return f"\nTask: {self.task:20s}\tProgram: {self.program:20s}\tDuration  : {self.duration}" \
+               f"\n\tWindow name: {window_name}" \
+               f"\n\tStart time: {self.time_start.replace(microsecond=0).isoformat(sep=' ')}" \
+               f"\n\tStart time: {self.time_end.replace(microsecond=0).isoformat(sep=' ')}"
+
+    @property
+    def json_serialize(self):
         """ The JSON serialized dump of a Job.  """
         return json.dumps(self, indent=4, cls=JobEncoder)
 
     @staticmethod
-    def deserialize(object) -> 'Job':
+    def json_deserialize(object) -> 'Job':
         """ Decode a serialized dump of a Job.  """
         return json.loads(object, cls=JobDecoder)
 

@@ -11,3 +11,8 @@ if __name__ == '__main__':
             # Sleep and run.
             time.sleep(0.2)
             session.run()
+
+            # Every x minutes auto save the summary
+            time_passed = time.time() - time_start
+            if time_passed > 60 * 5:
+                session.save_summary()

@@ -24,7 +24,7 @@ class Firefox(BaseProgram):
             self._job.window_name = 'hidden'
             return None
 
-        methods = ['_starts_with', '_endswith', '_pattern', '_splitting']
+        methods = ['_startswith', '_endswith', '_pattern', '_splitting']
         for method in methods:
             specific = getattr(self, method)(window_name)
             if isinstance(specific, str):
