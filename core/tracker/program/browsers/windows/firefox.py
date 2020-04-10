@@ -19,28 +19,60 @@ class Firefox(BaseProgram):
     def _parser(self, window_name: str):
         """ Returns the base name of the program based on the window name.  """
 
+        # Special case
         if window_name.endswith("Mozilla Firefox (Private Browsing)"):
             self._job.window_name = 'hidden'
             return None
 
-        if window_name.startswith("Stroper111"):
-            return "Github"
+        methods = ['_starts_with', '_endswith', '_pattern', '_splitting']
+        for method in methods:
+            specific = getattr(self, method)(window_name)
+            if isinstance(specific, str):
+                return specific
+        # No specification found
+        return None
 
-        if window_name.endswith("GitLab - Mozilla Firefox"):
-            return "GitLab"
+    @staticmethod
+    def _startswith(window_name):
+        """ Filter out all startswith.  """
+        starts = {"Stroper111": 'Github'}
+        for key, value in starts.items():
+            if window_name.startswith(key):
+                return value
+        return None
 
-        if len(re.findall("WhatsApp .* Mozilla Firefox", window_name)) > 0:
-            return 'WhatsApp'
+    @staticmethod
+    def _endswith(window_name):
+        """ Filter out all endswith.  """
+        ends = {"GitLab - Mozilla Firefox": 'GitLab'}
+        for key, value in ends.items():
+            if window_name.endswith(key):
+                return value
+        return None
+
+    @staticmethod
+    def _pattern(window_name):
+        patterns = {"WhatsApp .* Mozilla Firefox": 'WhatsApp',
+                    ".* ULTIMATE GUITAR TABS - .*": 'Guitar',
+                    ".* Ultimate-Guitar.Com": 'Guitar',
+                    }
+        for key, value in patterns.items():
+            if len(re.findall(key, window_name)) > 0:
+                return value
+        return None
+
+    @staticmethod
+    def _splitting(window_name):
+        """ Left over attempt to just break up the name, by last two sections.  """
 
         # YouTube - Mozilla Firefox
         # LoL Esports - Mozilla Firefox
         # Netflix - Mozilla Firefox
         window = window_name.split(" - ")
-        if len(window) == 2 and len(window[0]) < 20:
+        if len(window) == 2 and len(window[0]) < 20 and window[0] != window[1]:
             return window[0]
 
-        if len(window) > 2 and len(window[-2]) < 20:
+        if len(window) > 2 and len(window[-2]) < 20 and window[-2] != window[-1]:
             return window[-2]
 
-        # No specification found
         return None
