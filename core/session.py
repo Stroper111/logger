@@ -23,6 +23,7 @@ class Session:
         self._current_job: Union[Job, None] = None
         self._activities: Dict[str, Dict[str, List[Dict]]] = dict()
         self._tracker: Tracker = Tracker()
+        self._total_duration: int = 0
 
     def __enter__(self):
         return self
@@ -95,6 +96,7 @@ class Session:
 
     def store_duration(self):
         """ Store the current job duration in the activity list.  """
+        self._total_duration += self._current_job.duration.seconds
 
         # Get the task location
         exists_task = self._activities.get(self._current_job.task, None)
@@ -130,3 +132,5 @@ class Session:
                 for program, duration in sorted(programs.items()):
                     timer = datetime.timedelta(seconds=duration)
                     file.write(f"\n\tProgram: {program:30s} duration: {timer}")
+
+            file.write(f"\n\nTotal duration: {datetime.timedelta(seconds=self._total_duration)}")
