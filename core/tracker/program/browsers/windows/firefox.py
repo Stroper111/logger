@@ -55,6 +55,8 @@ class Firefox(BaseProgram):
         patterns = {"WhatsApp .* Mozilla Firefox": 'WhatsApp',
                     ".* ULTIMATE GUITAR TABS - .*": 'Guitar',
                     ".* Ultimate-Guitar.Com": 'Guitar',
+                    "Y\d Q\d - .* - Online LaTeX Editor Overleaf": 'unie',
+                    "[\d\w]{6} - .* - Online LaTeX Editor Overleaf": 'unie',
                     }
         for key, value in patterns.items():
             if len(re.findall(key, window_name)) > 0:
