@@ -10,19 +10,23 @@ from core.tracker import Tracker
 
 
 class Session:
-    _format_time = '%Y-%m-%d_%H-%M-%S'
+    _format_dir = '%Y-%m-%d_%H-%M-%S'
+    _format_time = '%Y %b %d, %a %H:%M:%S'
     _dir_activity = 'activities'
     _dir_logs = 'logs.json'
 
     def __init__(self):
         # Get base path
         dir_logger = str(pathlib.Path(__file__).parents[1])
-        self.dir_session = os.path.join(dir_logger, 'data', self._dir_activity, self.current_time)
+        self.dir_session = os.path.join(dir_logger, 'data', self._dir_activity, self.current_time())
 
         # Define trackers
         self._current_job: Union[Job, None] = None
         self._activities: Dict[str, Dict[str, List[Dict]]] = dict()
         self._tracker: Tracker = Tracker()
+
+        # Session trackers
+        self._start_time: datetime = datetime.datetime.now()
         self._total_duration: int = 0
 
     def __enter__(self):
@@ -49,9 +53,9 @@ class Session:
     def active_job(self):
         return self._current_job
 
-    @property
-    def current_time(self):
-        return datetime.datetime.now().strftime(self._format_time)
+    def current_time(self, format=None):
+        format = self._format_dir if format is None else format
+        return datetime.datetime.now().strftime(format)
 
     def save_summary(self):
         """ Save a summary of the current activities.  """
@@ -133,4 +137,6 @@ class Session:
                     timer = datetime.timedelta(seconds=duration)
                     file.write(f"\n\tProgram: {program:30s} duration: {timer}")
 
-            file.write(f"\n\nTotal duration: {datetime.timedelta(seconds=self._total_duration)}")
+            file.write(f"\n\nTotal duration: {datetime.timedelta(seconds=self._total_duration)}"
+                       f"\n\tStart time  - {self._start_time.strftime(self._format_time)}"
+                       f"\n\tEnd time    - {self.current_time(self._format_time)}")

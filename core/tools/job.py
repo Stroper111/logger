@@ -40,8 +40,8 @@ class Job:
     def __str__(self):
         return f"Task: {self.task:20s}\tProgram: {self.program:20s}\tDuration  : {self.duration}" \
                f"\n\tWindow name - {self.window_name}"\
-               f"\n\tStart time  - {self.start_timer}" \
-               f"\n\tEnd time    - {self.end_timer}"
+               f"\n\tStart time  - {self._time_start.strftime(self._format_time)}" \
+               f"\n\tEnd time    - {self._time_end.strftime(self._format_time) if self._time_end is not None else '-'}"
 
     def __repr__(self):
         return self.__str__()
