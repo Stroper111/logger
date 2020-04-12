@@ -59,8 +59,6 @@ class Session:
 
     def save_summary(self):
         """ Save a summary of the current activities.  """
-        self._save_job()
-        self._current_job = self._tracker.retrieve_job
         self._save_summary()
 
     def run(self):
