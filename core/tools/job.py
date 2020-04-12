@@ -78,11 +78,13 @@ class Job:
     @property
     def window_name(self):
         """ Cleans up the window name.  """
+        if self._window_name is None:
+            return 'None'
         return self._window_name.replace('\\', '/')
 
     @property
     def window_names(self):
-        return [window_name.replace('\\', '/') for window_name in self._window_name_alternatives]
+        return [window_name.replace('\\', '/') for window_name in self._window_name_alternatives if window_name]
 
     @property
     def serialize(self):

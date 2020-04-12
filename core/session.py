@@ -22,9 +22,9 @@ class Session:
         self.dir_session = os.path.join(dir_logger, 'data', self._dir_activity, self.current_time())
 
         # Define trackers
-        self._current_job: Union[Job, None] = None
-        self._activities: Dict[str, Dict[str, List[Dict]]] = dict()
         self._tracker: Tracker = Tracker()
+        self._current_job: Job = self._tracker.retrieve_job
+        self._activities: Dict[str, Dict[str, List[Dict]]] = dict()
 
         # Session trackers
         self._start_time: datetime = datetime.datetime.now()

@@ -67,7 +67,7 @@ class Tracker(AbstractTracker):
 
         # No match found
         if job.task is None:
-            job = Job(task='Idle', program='unknown', window_name=window_name)
+            job = Job()
         return job
 
     @staticmethod
