@@ -8,7 +8,7 @@ import re
 import core.tracker.program as program
 
 from core.tracker.abstract import AbstractTracker
-from core.tools import Job
+from core.tools import Job, TimeOut
 
 
 class Tracker(AbstractTracker):
@@ -18,6 +18,9 @@ class Tracker(AbstractTracker):
 
     def __init__(self):
         super().__init__()
+
+        # Timeout function to retrieve program names.
+        self.timout = TimeOut()
 
         # Get base path
         dir_data = str(pathlib.Path(__file__).parents[2])
@@ -39,9 +42,7 @@ class Tracker(AbstractTracker):
 
     @property
     def active_window_name(self) -> str:
-        window = win32gui.GetForegroundWindow()
-        window_name = win32gui.GetWindowText(window)
-        return window_name
+        return self.timout.active_window
 
     @property
     def retrieve_job(self) -> Job:
