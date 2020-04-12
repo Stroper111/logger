@@ -11,9 +11,12 @@ class Programming(BaseProgram):
 
     @property
     def job(self):
-        specification = self._job._window_name.split(' ').pop(0)
+        specification = self._parser(self._job.window_name)
         self._job.program = f"{self._job.program} ({specification})"
         return self._job
 
     def _parser(self, window_name):
-        return
+        specification = window_name.split(' ').pop(0)
+        if len(specification) > 20:
+            return "Unknown"
+        return specification
