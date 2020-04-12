@@ -17,6 +17,6 @@ class Programming(BaseProgram):
 
     def _parser(self, window_name):
         specification = window_name.split(' ').pop(0)
-        if len(specification) > 20:
+        if len(specification.split("/")):
             return "Unknown"
         return specification
