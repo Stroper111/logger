@@ -35,7 +35,8 @@ class Firefox(BaseProgram):
     @staticmethod
     def _startswith(window_name):
         """ Filter out all startswith.  """
-        starts = {"Stroper111": 'Github'}
+        starts = {"Stroper111": 'Github',
+                  "jMonkeyEngine 3": 'JME'}
         for key, value in starts.items():
             if window_name.startswith(key):
                 return value
