@@ -129,12 +129,22 @@ class Session:
 
         path_summary = os.path.join(self.dir_session, 'summary.txt')
         with codecs.open(path_summary, 'w', 'utf-8') as file:
+
             for task, programs in sorted(self._activities.items()):
                 file.write(f"\n\nTask: {task}")
+
                 for program, duration in sorted(programs.items()):
                     timer = datetime.timedelta(seconds=duration)
                     file.write(f"\n\tProgram: {program:30s} duration: {timer}")
 
-            file.write(f"\n\nTotal duration: {datetime.timedelta(seconds=self._total_duration)}"
-                       f"\n\tStart time  - {self._start_time.strftime(self._format_time)}"
-                       f"\n\tEnd time    - {self.current_time(self._format_time)}")
+            file.write(self._save_stats())
+
+    def _save_stats(self):
+        passed_seconds = (datetime.datetime.now() - self._start_time).seconds
+        total_logged = datetime.timedelta(seconds=self._total_duration)
+        total_passed = datetime.timedelta(seconds=passed_seconds)
+
+        return f"\n\nTotal duration: {total_passed}" \
+               f"\n\tLogged      - {total_logged} ({self._total_duration / passed_seconds * 100:4.1f}%)" \
+               f"\n\tStart time  - {self._start_time.strftime(self._format_time)}" \
+               f"\n\tEnd time    - {self.current_time(self._format_time)}"
