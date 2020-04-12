@@ -18,6 +18,7 @@ class TimeOut:
             task = self.__pool.apply_async(self.active_window_name)
             return task.get(timeout=self.__timeout)
         except multiprocessing.context.TimeoutError:
+            print("\nTimeoutError")
             return 'Unknown'
 
     @staticmethod

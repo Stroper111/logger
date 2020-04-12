@@ -33,13 +33,17 @@ class Job:
     def __init__(self, task: str = 'Idle', program: str = 'unknown', window_name: str = 'None'):
         self.task = task
         self.program = program
+
         self._window_name = window_name
+        self._window_name_alternatives = [self.window_name]
+
         self._time_start: datetime = datetime.now()
         self._time_end: Union[datetime, None] = None
 
     def __str__(self):
+        window_names = '\n\tWindow name - '.join(self.window_names)
         return f"Task: {self.task:20s}\tProgram: {self.program:20s}\tDuration  : {self.duration}" \
-               f"\n\tWindow name - {self.window_name}"\
+               f"\n\tWindow name - {window_names}" \
                f"\n\tStart time  - {self._time_start.strftime(self._format_time)}" \
                f"\n\tEnd time    - {self._time_end.strftime(self._format_time) if self._time_end is not None else '-'}"
 
@@ -74,14 +78,17 @@ class Job:
     @property
     def window_name(self):
         """ Cleans up the window name.  """
-        if self._window_name is None:
-            return 'None'
         return self._window_name.replace('\\', '/')
 
     @property
+    def window_names(self):
+        return [window_name.replace('\\', '/') for window_name in self._window_name_alternatives]
+
+    @property
     def serialize(self):
+        window_names = '\n\tAlternative - '.join(self.window_names)
         return f"\nTask: {self.task:20s}\tProgram: {self.program:20s}\tDuration  : {self.duration}" \
-               f"\n\tWindow name - {self.window_name}" \
+               f"\n\tWindow name - {window_names}" \
                f"\n\tStart time  - {self.start_timer}" \
                f"\n\tEnd time    - {self.end_timer}"
 
@@ -97,6 +104,10 @@ class Job:
 
     def stop(self):
         self._time_end = datetime.now()
+
+    def add_sub_window(self, window_name):
+        self._window_name_alternatives.append(window_name)
+        self._window_name_alternatives.sort()
 
 
 if __name__ == '__main__':

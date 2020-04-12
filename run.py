@@ -9,7 +9,7 @@ if __name__ == '__main__':
     with Session() as session:
         while True:
             # Sleep and run.
-            time.sleep(0.2)
+            time.sleep(0.5)
             session.run()
 
             # Every x minutes auto save the summary

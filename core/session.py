@@ -12,6 +12,7 @@ from core.tracker import Tracker
 class Session:
     _format_dir = '%Y-%m-%d_%H-%M-%S'
     _format_time = '%Y %b %d, %a %H:%M:%S'
+
     _dir_activity = 'activities'
     _dir_logs = 'logs.json'
 
@@ -62,12 +63,17 @@ class Session:
         self._save_summary()
 
     def run(self):
+        current_job = self._tracker.retrieve_job
         if self._current_job is None:
-            self._current_job = self._tracker.retrieve_job
+            self._current_job = current_job
 
-        if self._current_job != self._tracker.retrieve_job:
+        if self._current_job != current_job:
             self._store_job()
-            self._current_job = self._tracker.retrieve_job
+            self._current_job = current_job
+
+        elif current_job.window_name not in self._current_job.window_names:
+            print(f"Changed name: {current_job.window_name}")
+            self._current_job.add_sub_window(current_job.window_name)
 
     def print(self,  threshold=60):
         """ Gives a nice print of the current activity list and total time spent on every task and program.  """
@@ -87,8 +93,8 @@ class Session:
         if (self._current_job.duration.seconds > 2):
             print(f"\n{self._current_job}")
         else:
-            print(f"\nMicromanagement: {self._current_job.window_name}")
-            self._current_job.task = 'Micromanagement'
+            print(f"\nSwitching: {self._current_job.window_name}")
+            self._current_job.task = 'Switching'
 
         # Store the job to a json file.
         self._save_job()
