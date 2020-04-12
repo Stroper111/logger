@@ -143,8 +143,9 @@ class Session:
         passed_seconds = (datetime.datetime.now() - self._start_time).seconds
         total_logged = datetime.timedelta(seconds=self._total_duration)
         total_passed = datetime.timedelta(seconds=passed_seconds)
+        percentage = self._total_duration / (passed_seconds if passed_seconds else 1)
 
         return f"\n\nTotal duration: {total_passed}" \
-               f"\n\tLogged      - {total_logged} ({self._total_duration / passed_seconds * 100:4.1f}%)" \
+               f"\n\tLogged      - {str(total_logged):>25s} ({percentage * 100:4.1f}%)" \
                f"\n\tStart time  - {self._start_time.strftime(self._format_time)}" \
                f"\n\tEnd time    - {self.current_time(self._format_time)}"
