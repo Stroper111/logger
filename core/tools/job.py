@@ -41,7 +41,7 @@ class Job:
         self._time_end: Union[datetime, None] = None
 
     def __str__(self):
-        window_names = '\n\tWindow name - '.join(self.window_names)
+        window_names = '\n\tAlternative - '.join(self.window_names)
         return f"Task: {self.task:20s}\tProgram: {self.program:20s}\tDuration  : {self.duration}" \
                f"\n\tWindow name - {window_names}" \
                f"\n\tStart time  - {self._time_start.strftime(self._format_time)}" \
