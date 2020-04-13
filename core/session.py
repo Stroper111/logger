@@ -126,6 +126,7 @@ class Session:
 
         path_logs = os.path.join(self.dir_session, 'logs.txt')
         data = self._current_job.serialize
+
         with codecs.open(path_logs, 'a', 'utf-8') as file:
             file.write(data + '\n')
 
