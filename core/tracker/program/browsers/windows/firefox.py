@@ -58,6 +58,7 @@ class Firefox(BaseProgram):
                     ".* Ultimate-Guitar.Com": 'Guitar',
                     "Y\d Q\d - .* - Online LaTeX Editor Overleaf": 'unie',
                     "[\d\w]{6} - .* - Online LaTeX Editor Overleaf": 'unie',
+                    "https://www.youtube.com/watch.*": 'Youtube',
                     }
         for key, value in patterns.items():
             if len(re.findall(key, window_name)) > 0:
