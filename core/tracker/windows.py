@@ -1,13 +1,6 @@
-import win32gui
-
-import pathlib
-import yaml
-import os
-import re
-
-import core.tracker.program as program
 
 from core.tracker.base import BaseTracker
+from core.tracker import program
 from core.tools import Job, TimeOut
 
 
@@ -54,7 +47,7 @@ class Tracker(BaseTracker):
 
         # No match found
         if job.task is None:
-            job = Job()
+            job = Job(window_name=window_name)
         return job
 
 
