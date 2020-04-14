@@ -1,10 +1,10 @@
 
-Remaining:
-    obs: OBS \d\d.\d.\d
-    vuze: SWT_Window_Vuze
+Programming:
+  JME: jMonkeyEngine SDK
 
 Contacts:
   slack (Serpentine): Slack \| .* \| Serpentine
 
-Programming:
-  JME: jMonkeyEngine SDK .*
+Remaining:
+    obs: OBS \d\d.\d.\d
+    vuze: SWT_Window_Vuze

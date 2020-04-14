@@ -51,7 +51,7 @@ class BaseTracker:
     def _retrieve_pattern(self, window_name):
         """ Get the specific taks and program by means of pattern matching.  """
         for task, patterns in self.data_patterns.items():
-            for pattern, program in patterns.items():
+            for program, pattern in patterns.items():
                 if len(re.findall(pattern, window_name)) > 0:
                     return task, program, window_name
         return (None,) * 3
