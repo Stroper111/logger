@@ -1,17 +1,16 @@
-import os
 import pathlib
-from abc import ABC, abstractmethod
-
+import os
+import re
 import yaml
+
 
 from core.tools import Job
 
 
-class BaseTracker(ABC):
+class BaseTracker:
     _programs = ('programs', 'programs.yaml')
     _patterns = ('patterns', 'patterns.yaml')
 
-    @abstractmethod
     def __init__(self):
         # Get base path
         dir_data = str(pathlib.Path(__file__).parents[2])
@@ -26,16 +25,14 @@ class BaseTracker(ABC):
             setattr(self, 'data_' + name, self._load_yaml(full_path))
 
     @property
-    @abstractmethod
     def active_window_name(self) -> str:
         """ Return the name of the active window.  """
-        pass
+        raise NotImplementedError
 
     @property
-    @abstractmethod
     def retrieve_job(self) -> Job:
         """ Get the current active job.  """
-        pass
+        raise NotImplementedError
 
     @staticmethod
     def _load_yaml(path):
