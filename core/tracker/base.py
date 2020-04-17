@@ -45,14 +45,14 @@ class BaseTracker:
         """ Get the specific taks and program from a program name.  """
         for task, programs in self.data_programs.items():
             if programs.get(program_name, None) is not None:
-                return task, programs[program_name], window_name
-        return (None,) * 3
+                return Job(task, programs[program_name], window_name)
+        return Job()
 
     def _retrieve_pattern(self, window_name):
         """ Get the specific taks and program by means of pattern matching.  """
         for task, patterns in self.data_patterns.items():
             for program, pattern in patterns.items():
                 if len(re.findall(pattern, window_name)) > 0:
-                    return task, program, window_name
-        return (None,) * 3
+                    return Job(task, program, window_name)
+        return Job()
 

@@ -34,20 +34,15 @@ class Tracker(BaseTracker):
 
         # Check for primary programs
         if program_name:
-            job: Job = Job(*self._retrieve_program(program_name, window_name))
+            job: Job = self._retrieve_program(program_name, window_name)
 
         # If there is no program name or not found, try pattern matching.
         if not program_name or (program_name and job.task is None):
-            job = Job(*self._retrieve_pattern(window_name))
+            job = self._retrieve_pattern(window_name)
 
         # Check if we can specify the activity more
         if job.task and hasattr(program, job.task):
             program_filter = getattr(program, job.task)(job)
             job = program_filter.job
 
-        # No match found
-        if job.task is None:
-            job = Job(window_name=window_name)
         return job
-
-
