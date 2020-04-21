@@ -94,7 +94,6 @@ class Session:
             print(f"\n{self._current_job}")
         else:
             print(f"\nSwitching: {self._current_job.window_name}")
-            self._current_job.task = 'Switching'
 
         # Store the job to a json file.
         self._save_job()
@@ -104,7 +103,6 @@ class Session:
 
     def store_duration(self):
         """ Store the current job duration in the activity list.  """
-        self._total_duration += self._current_job.duration.seconds
 
         # Get the task location
         exists_task = self._activities.get(self._current_job.task, None)
@@ -141,8 +139,11 @@ class Session:
                 file.write(f"\n\nTask: {task}")
 
                 for program, duration in sorted(programs.items()):
-                    timer = datetime.timedelta(seconds=duration)
-                    file.write(f"\n\tProgram: {program:30s} duration: {timer}")
+
+                    if duration > 60:   # Filter out short programs
+                        timer = datetime.timedelta(seconds=duration)
+                        file.write(f"\n\tProgram: {program:30s} duration: {timer}")
+                        self._total_duration += duration
 
             file.write(self._save_stats())
 

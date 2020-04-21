@@ -6,8 +6,6 @@ from core.tools import Job, TimeOut
 
 class Tracker(BaseTracker):
 
-
-
     def __init__(self):
         super().__init__()
         
