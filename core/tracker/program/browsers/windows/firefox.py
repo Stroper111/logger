@@ -59,6 +59,7 @@ class Firefox(BaseProgram):
                     "Y\d Q\d - .* - Online LaTeX Editor Overleaf": 'unie',
                     "[\d\w]{6} - .* - Online LaTeX Editor Overleaf": 'unie',
                     "https://www.youtube.com/watch.*": 'Youtube',
+                    ".*[\d\w]{5} \(\d{4}-GS\d\)": 'unie',
                     }
         for key, value in patterns.items():
             if len(re.findall(key, window_name)) > 0:
