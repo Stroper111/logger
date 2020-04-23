@@ -132,6 +132,7 @@ class Session:
         if not os.path.exists(self.dir_session):
             os.makedirs(self.dir_session)
 
+        self._total_duration = 0
         path_summary = os.path.join(self.dir_session, 'summary.txt')
         with codecs.open(path_summary, 'w', 'utf-8') as file:
 
